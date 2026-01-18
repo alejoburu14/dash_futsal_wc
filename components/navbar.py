@@ -1,44 +1,43 @@
 # components/navbar.py
 from __future__ import annotations
+from dash import html
 import dash_bootstrap_components as dbc
-from dash import html, dcc
-from flask_login import current_user
 
-def navbar():
+def _safe_user_label() -> str:
+    try:
+        from flask_login import current_user  # lazy import
+        u = current_user
+        uid = None
+        if u is not None:
+            uid = u.get_id() if hasattr(u, "get_id") else getattr(u, "id", None)
+        return f"Signed in as {uid or '-'}"
+    except Exception:
+        return "Signed in as -"
+
+def navbar() -> dbc.Navbar:
+    user_text = _safe_user_label()
+
     return dbc.Navbar(
         dbc.Container(
-            fluid=True,
-            children=[
-                html.A(
-                    dbc.Row([
-                        dbc.Col(html.I("🏆", style={"font-size":"1.2rem"})),
-                        dbc.Col(dbc.NavbarBrand("Futsal WC (Dash)", className="ms-2")),
-                    ], align="center", className="g-0"),
-                    href="/",
-                    style={"textDecoration":"none"},
-                ),
+            [
+                dbc.NavbarBrand("Futsal WC", href="/"),
                 dbc.Nav(
                     [
                         dbc.NavLink("Home", href="/", active="exact"),
-                        dbc.NavLink("Dashboard · Performance", href="/performance", active="exact"),
-                        dbc.NavLink("Dashboard · Medical", href="/medical", active="exact"),
+                        dbc.NavLink("Performance", href="/performance", active="exact"),
+                        dbc.NavLink("Non-Competitive", href="/medical", active="exact"),
                     ],
-                    className="ms-auto",
-                    pills=True,
+                    className="me-auto",
+                    navbar=True,
                 ),
-                dbc.Nav(
-                    [
-                        dbc.NavLink("Logout", href="/logout", external_link=True),
-                    ],
-                    className="ms-3",
-                ),
-                html.Div(
-                    f"Signed in as {current_user.get_id() or '-'}",
-                    className="text-muted ms-3",
-                )
+                # REPLACEMENT for dbc.NavbarText:
+                html.Span(user_text, id="user-label", className="navbar-text me-3"),
+                dbc.Button("Logout", id="logout-btn", color="secondary", n_clicks=0),
             ],
+            fluid=True,
         ),
-        color="light",
-        light=True,
-        className="mb-2 border-bottom",
+        color="dark",
+        dark=True,
+        className="mb-4",
     )
+
