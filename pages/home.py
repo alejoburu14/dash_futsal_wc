@@ -13,6 +13,6 @@ def layout():
         html.P("This is a basic multi-page Dash app with authentication."),
         html.Ul([
             html.Li("Use the Performance dashboard to explore match timelines."),
-            html.Li("Use the Medical dashboard to explore injuries (non-competitive area)."),
+            html.Li("Use the Medical dashboard to explore injuries."),
         ])
     ])

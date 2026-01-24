@@ -25,7 +25,7 @@ def navbar() -> dbc.Navbar:
                     [
                         dbc.NavLink("Home", href="/", active="exact"),
                         dbc.NavLink("Performance", href="/performance", active="exact"),
-                        dbc.NavLink("Non-Competitive", href="/medical", active="exact"),
+                        dbc.NavLink("Medical", href="/medical", active="exact"),
                     ],
                     className="me-auto",
                     navbar=True,
