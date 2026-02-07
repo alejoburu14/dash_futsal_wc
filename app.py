@@ -12,7 +12,7 @@ from flask_login import current_user, login_required, logout_user
 from flask_caching import Cache
 
 import dash
-from dash import html, dcc
+from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 
 from auth import setup_login
@@ -61,6 +61,31 @@ app.layout = dbc.Container(
         html.Div(dash.page_container, id="page-container", className="mt-3")
     ],
 )
+
+@callback(
+    Output("url", "pathname"),
+    Input("logout-btn", "n_clicks"),
+    prevent_initial_call=True,
+)
+def _go_to_logout(n):
+    # Clicking the navbar button sends the browser to the Flask endpoint
+    return "/logout"
+
+@callback(
+    Output("user-label", "children"),
+    Input("url", "pathname"),   # fires when you navigate, login, logout (redirect)
+    prevent_initial_call=False, # also run once on initial load
+)
+def _update_user_label(_):
+    try:
+        from flask_login import current_user
+        if getattr(current_user, "is_authenticated", False):
+            uid = current_user.get_id() or getattr(current_user, "id", None)
+            return f"Signed in as {uid or '-'}"
+        return "Signed in as -"
+    except Exception:
+        return "Signed in as -"
+
 
 # --- Flask logout endpoint ---
 # This endpoint is called when user clicks the "Logout" button

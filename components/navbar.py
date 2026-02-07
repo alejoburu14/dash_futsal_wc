@@ -42,8 +42,6 @@ def navbar() -> dbc.Navbar:
     Returns:
         dbc.Navbar: Bootstrap Navbar component
     """
-    user_text = _safe_user_label()
-
     return dbc.Navbar(
         dbc.Container(
             [
@@ -64,8 +62,8 @@ def navbar() -> dbc.Navbar:
                     navbar=True,
                 ),
                 
-                # User info display (replaces dbc.NavbarText which has compatibility issues)
-                html.Span(user_text, id="user-label", className="navbar-text me-3"),
+                # User info display
+                html.Span("Signed in as -", id="user-label", className="navbar-text me-3"),
                 
                 # Logout button
                 dbc.Button("Logout", id="logout-btn", color="secondary", n_clicks=0),
